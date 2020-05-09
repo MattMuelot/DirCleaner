@@ -1,5 +1,6 @@
 import os
 from DirectoryDecorators import Decorators
+import platform
 
 
 class FileOrganizer:
@@ -12,6 +13,7 @@ class FileOrganizer:
         self.excel_types = ['.csv', '.mhtml', '.ods', '.xls', '.xlsb', '.xlsm', '.xlsx', '.xml', '.xlt', '.xps']
         self.img_types = ['.jpg', '.png', '.gif', '.jpeg']
         self.num_moved = 0
+        self.sys_type = platform.system()
 
     def check_directory(self):
         self.homeless_files = []
@@ -29,7 +31,7 @@ class FileOrganizer:
                 else:
                     pass
 
-    def move_files(self):
+    def move_files_win(self):
         while len(self.homeless_files) > 0:
             for f in self.homeless_files:
                 for t in self.text_types:
@@ -65,12 +67,21 @@ class FileOrganizer:
                 self.homeless_files.remove(f)
                 self.num_moved += 1
 
+    def move_files_lin(self):
+        # TODO: Add Linux functionality, working with file names with/without extensions.
+        pass
+
     @Decorators.completion_decorator
     def app_mainloop(self):
         try:
-            self.check_directory()
-            self.move_files()
-            return self.num_moved
+            if self.sys_type == 'Windows':
+                self.check_directory()
+                self.move_files_win()
+                return self.num_moved
+            elif self.sys_type == 'Linux':
+                self.check_directory()
+                # self.move_files_lin()
+                return self.num_moved
         except:
             return False
 
